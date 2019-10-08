@@ -7,7 +7,6 @@ namespace RetroJam.CaptainBlood
     [ExecuteInEditMode]
 public class TerrainGenerator : MonoBehaviour
 {
-    //EPISODE 2
         Terrain_manager terrain_man;
 
         #region Preference
@@ -39,7 +38,8 @@ public class TerrainGenerator : MonoBehaviour
         float factor = 1;
         #endregion
 
-
+        [Space(10)]
+        [SerializeField] Shader CalculShader;
 
         public void Start()
         {
@@ -100,7 +100,9 @@ public class TerrainGenerator : MonoBehaviour
             xCord = (float)x / width * Scale*multiplicator + offsetX + startOffset*factor ;
             yCord = (float)y / height * Scale*multiplicator + offsetY;
 
-            return Mathf.PerlinNoise(xCord, yCord);
+            return Perlin.Fbm(xCord, yCord, 4);
+            //return Mathf.PerlinNoise(xCord, yCord);
+
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Windows.Speech;
 
 namespace RetroJam.CaptainBlood
@@ -16,12 +17,21 @@ namespace RetroJam.CaptainBlood
 
     void Start()
         {
-            actions.Add("I", I);
-            actions.Add("want", Want);
-            actions.Add("bounty", Bounty);
-            actions.Add("sex", Sex);
+            Scene currentScene = SceneManager.GetActiveScene();
 
-            actions.Add("Jouer", Jouer);
+            if (currentScene.buildIndex == 0)
+            {
+                actions.Add("Jouer", Jouer);
+                actions.Add("Quitter", Quitter);
+                Debug.Log("ta mere elle est tellement chauve");
+            }
+            else
+            {
+                actions.Add("I", I);
+                actions.Add("want", Want);
+                actions.Add("bounty", Bounty);
+                actions.Add("sex", Sex);
+            }
 
             keyReco = new KeywordRecognizer(actions.Keys.ToArray());
             keyReco.OnPhraseRecognized += Reco;
@@ -54,5 +64,8 @@ namespace RetroJam.CaptainBlood
 
         private void Jouer()
         { print("Jouer"); MenuMana.PlayGame(); }
+
+        private void Quitter()
+        { print("Quitter"); Application.Quit(); }
     }
 }
