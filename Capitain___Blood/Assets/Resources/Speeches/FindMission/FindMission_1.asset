@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a6e5ae69bfd154891990869de1f53d, type: 3}
+  m_Name: FindMission_1
+  m_EditorClassIdentifier: 
+  speech:
+    sentences:
+    - words: 050000000d000000060000000000000000000000000000000000000000000000
+    - words: 0500000015000000060000000000000000000000000000000000000000000000
+    - words: 060000000c000000050000002c00000000000000000000000000000000000000
+    - words: 060000000f0000002c0000000100000000000000000000000000000000000000
+    types: 000000000000000000000000010000000400000004000000
+    requirements: 000000000000000000000000010000000400000004000000
+    status: 1
+    condition:
+    - words: 03000000
+      requirements: 1
+    - words: 050000000f0000002c000000
+      requirements: 2

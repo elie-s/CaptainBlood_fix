@@ -1,0 +1,41 @@
+{
+  "sentences": [
+    {
+      "words": [
+        44,
+        109,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "size": 8
+    }
+  ],
+  "types": [
+    2,
+    5
+  ],
+  "requirements": [
+    2,
+    5
+  ],
+  "status": 1,
+  "condition": [
+    {
+      "words": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "requirements": 1
+    }
+  ]
+}
