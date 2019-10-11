@@ -1591,7 +1591,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 10, y: 87}
-  m_SizeDelta: {x: 21, y: 7}
+  m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &401780457
 MonoBehaviour:
@@ -1642,8 +1642,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 7
-  m_fontSizeBase: 7
+  m_fontSize: 36
+  m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4736,7 +4736,7 @@ TerrainCollider:
   m_GameObject: {fileID: 1346792989}
   m_Material: {fileID: 0}
   m_Enabled: 1
-  m_TerrainData: {fileID: 15600000, guid: 9a6b3a2c5f2717d4ca72480827c24ce2, type: 2}
+  m_TerrainData: {fileID: 15600000, guid: bdca9295a03a7674991d906e4c9ed17a, type: 2}
   m_EnableTreeColliders: 0
 --- !u!218 &1346792993
 Terrain:
@@ -4747,7 +4747,7 @@ Terrain:
   m_GameObject: {fileID: 1346792989}
   m_Enabled: 1
   serializedVersion: 3
-  m_TerrainData: {fileID: 15600000, guid: 9a6b3a2c5f2717d4ca72480827c24ce2, type: 2}
+  m_TerrainData: {fileID: 15600000, guid: bdca9295a03a7674991d906e4c9ed17a, type: 2}
   m_TreeDistance: 5000
   m_TreeBillboardDistance: 50
   m_TreeCrossFadeLength: 5
