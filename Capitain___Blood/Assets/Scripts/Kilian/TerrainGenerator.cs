@@ -48,7 +48,7 @@ public class TerrainGenerator : MonoBehaviour
         }
 
 
-        void Update()
+        void LateUpdate()
         {
             Terrain terrain = GetComponent<Terrain>();      //for Terrain Data
             terrain.terrainData = GenerateTerrain(terrain.terrainData);

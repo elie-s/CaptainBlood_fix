@@ -85,7 +85,7 @@ namespace RetroJam.CaptainBlood
             float w = 0.5f;
             for (float i = 0; i < octave; i++)
             {
-                f += w * Noise(coord);
+                f += w * Noise(coord.x, coord.y); // Changed
                 coord *= 2.0f;
                 w *= 0.5f;
             }
