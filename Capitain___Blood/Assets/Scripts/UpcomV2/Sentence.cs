@@ -8,7 +8,7 @@ namespace RetroJam.CaptainBlood.Upcom
     public class Sentence
     {
         public Word[] words;
-        public SentenceElement[] elements;
+        public SentenceElement elementsHierarchy;
         public WordNature[] schema;
 
         public int[] nouns;
@@ -42,19 +42,33 @@ namespace RetroJam.CaptainBlood.Upcom
             specials = naturesLists[(int)WordNature.Special].ToArray();
         }
 
+        //private void SetElements()
+        //{
+        //    List<Word> list = words.ToList();
+        //    int hierarchy = 0;
+
+        //    for (int i = 7; i >= 0; i--)
+        //    {
+        //        if (list[i] == Word.none) list.RemoveAt(i);
+        //    }
+
+        //    while (list.Count > 0)
+        //    {
+        //        elementsHierarchy = new SentenceElement(words[verbs[0]]);
+        //    }
+        //}
+
         private void SetElements()
         {
-            List<Word> list = words.ToList();
-            int hierarchy = 0;
+            Word[] copyWords = words;
+            int mainVerbIndex = verbs[0];
 
-            for (int i = 7; i >= 0; i--)
-            {
-                if (list[i] == Word.none) list.RemoveAt(i);
-            }
+            List<SentenceElement> elements = new List<SentenceElement>();
 
-            while (list.Count > 0)
+
+            for (int i = 0; i < nouns.Length; i++)
             {
-                
+
             }
         }
 
@@ -137,11 +151,31 @@ namespace RetroJam.CaptainBlood.Upcom
         enum State { invalid, valid, none };
     }
 
-    public struct SentenceElement
+    [System.Serializable]
+    public class SentenceElement
     {
         public Word word;
-        public SentenceElement[] elements;
+        public WordFunction function;
         public int index;
         public int hierarchy;
+        public SentenceElement[] elements;
+
+        public SentenceElement(Word _word, WordFunction _function)
+        {
+            word = _word;
+            function = _function;
+            elements = new SentenceElement[0];
+            index = -1;
+            hierarchy = -1;
+        }
+
+        public SentenceElement(Word _word, WordFunction _function, int _index, int _hierarchy)
+        {
+            word = _word;
+            function = _function;
+            elements = new SentenceElement[0];
+            index = _index;
+            hierarchy = _hierarchy;
+        }
     }
 }
