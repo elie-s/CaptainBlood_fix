@@ -6,12 +6,6 @@ namespace RetroJam.CaptainBlood
 {
     [ExecuteInEditMode]
 
-    public struct MyStruct
-    {
-        public Vector2 VectorMap;
-        public float height;
-    };
-
     public class TerrainGenerator : MonoBehaviour
     {
         //Terrain generation stuff
@@ -50,9 +44,11 @@ namespace RetroJam.CaptainBlood
         float[,] heights;
         [SerializeField] ComputeShader CalculShader;
         ComputeBuffer myBuffer;
-        MyStruct[] data;
         int indexOfKernel;
         float result;
+
+        List<Vector2> dataVector = new List<Vector2>();
+        List<float> dataHeight = new List<float>();
 
 
         public void Start()
@@ -62,11 +58,6 @@ namespace RetroJam.CaptainBlood
 
             indexOfKernel = CalculShader.FindKernel("CSMain");
             myBuffer = new ComputeBuffer(2, 12);
-            data = new MyStruct[2];
-            for (int i = 0; i < data.Length; i++)
-            {
-                data[i] = new MyStruct();
-            }
 
 
         }
@@ -124,16 +115,17 @@ namespace RetroJam.CaptainBlood
             yCord = (float)y / height * Scale*multiplicator + offsetY;
 
 
-            //data[0].VectorMap = new Vector2(xCord, yCord);
-            myBuffer.SetData(data);
+            dataVector.Add(new Vector2(xCord, yCord));
+            myBuffer.SetData(dataVector.ToArray());
+            myBuffer.SetData(dataHeight.ToArray());
             CalculShader.SetBuffer(indexOfKernel, "Result", myBuffer);
             CalculShader.Dispatch(indexOfKernel, 8, 8, 1);
-            myBuffer.GetData(data);
+            myBuffer.GetData(dataHeight.ToArray()) ;
             myBuffer.Release();
 
 
 
-            return result;
+            return dataHeight[0];
             //return Mathf.PerlinNoise(xCord, yCord);
 
         }
