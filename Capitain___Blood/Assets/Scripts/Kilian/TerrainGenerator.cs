@@ -58,12 +58,21 @@ namespace RetroJam.CaptainBlood
         public void Start()
         {
             terrain_man = GetComponentInParent<Terrain_manager>();
+            heights = new float[width, height];
 
             indexOfKernel = CalculShader.FindKernel("CSMain");
+            myBuffer = new ComputeBuffer(2, 12);
+            data = new MyStruct[2];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = new MyStruct();
+            }
+
+
         }
 
 
-        void LateUpdate()
+        void Update()
         {
             Terrain terrain = GetComponent<Terrain>();      //for Terrain Data
             terrain.terrainData = GenerateTerrain(terrain.terrainData);
@@ -95,7 +104,6 @@ namespace RetroJam.CaptainBlood
 
         float[,] GenerateHeights()
         {
-            heights = new float[width, height];
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
@@ -115,25 +123,21 @@ namespace RetroJam.CaptainBlood
             xCord = (float)x / width * Scale*multiplicator + offsetX + startOffset*factor ;
             yCord = (float)y / height * Scale*multiplicator + offsetY;
 
-            for (int i = 0; i < data.Length; i++)
-            {
-                data[i] = new MyStruct();
-                data[i].VectorMap = new Vector2(xCord, yCord);
-                result = data[i].height;
-            }
 
-            myBuffer = new ComputeBuffer(heights.Length, sizeof(float));
+            //data[0].VectorMap = new Vector2(xCord, yCord);
             myBuffer.SetData(data);
             CalculShader.SetBuffer(indexOfKernel, "Result", myBuffer);
-            CalculShader.Dispatch(indexOfKernel, 1024, 1, 1);
+            CalculShader.Dispatch(indexOfKernel, 8, 8, 1);
             myBuffer.GetData(data);
             myBuffer.Release();
+
 
 
             return result;
             //return Mathf.PerlinNoise(xCord, yCord);
 
         }
+
 
     }
 }
