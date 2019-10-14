@@ -65,17 +65,15 @@ float Fbm(float2 coord)
 }
 
 
-RWStructuredBuffer<float> height;
-StructuredBuffer<float2> VectorMap;
+RWStructuredBuffer<float> dataHeight;
+RWStructuredBuffer<float2> dataVector;
 
 
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-	//MyStruct p = Result[id.x];
-	//Result[id.x].height = Fbm(Result[id].VectorMap);
-	//Result[id.x] = p;
-	height[id.x] = Fbm(VectorMap[id.x]);
-
-
+	//dataHeight[id.x] = Fbm(dataVector[id.x]);
+	dataHeight[id.x] = 7.0;
+	dataVector[id.x] = 1.1;
+	dataVector[id.y] = 1.3;
 }

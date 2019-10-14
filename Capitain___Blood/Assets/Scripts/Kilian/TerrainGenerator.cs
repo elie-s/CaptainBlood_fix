@@ -43,22 +43,20 @@ namespace RetroJam.CaptainBlood
         //Compute Shader stuff
         float[,] heights;
         [SerializeField] ComputeShader CalculShader;
-        ComputeBuffer myBuffer;
+        public ComputeBuffer myBuffer;
+        public ComputeBuffer floatBuffer;
         int indexOfKernel;
-        float result;
 
-        List<Vector2> dataVector = new List<Vector2>();
-        List<float> dataHeight = new List<float>();
+        Vector2[] dataVector = new Vector2[2];
+        float[] dataHeight = new float[2];
 
-
-        public void Start()
+        public void Awake()
         {
             terrain_man = GetComponentInParent<Terrain_manager>();
-            heights = new float[width, height];
 
             indexOfKernel = CalculShader.FindKernel("CSMain");
-            myBuffer = new ComputeBuffer(2, 12);
-
+            myBuffer = new ComputeBuffer(1, 16);
+            floatBuffer = new ComputeBuffer(1, 8);
 
         }
 
@@ -95,6 +93,7 @@ namespace RetroJam.CaptainBlood
 
         float[,] GenerateHeights()
         {
+            heights = new float[width, height];
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
@@ -115,18 +114,24 @@ namespace RetroJam.CaptainBlood
             yCord = (float)y / height * Scale*multiplicator + offsetY;
 
 
-            dataVector.Add(new Vector2(xCord, yCord));
-            myBuffer.SetData(dataVector.ToArray());
-            myBuffer.SetData(dataHeight.ToArray());
-            CalculShader.SetBuffer(indexOfKernel, "Result", myBuffer);
+            dataVector[0] = new Vector2(xCord, yCord);
+            myBuffer.SetData(dataVector);
+            floatBuffer.SetData(dataHeight);
+            CalculShader.SetBuffer(indexOfKernel, "dataHeight", floatBuffer);
+            CalculShader.SetBuffer(indexOfKernel, "dataVector", myBuffer);
             CalculShader.Dispatch(indexOfKernel, 8, 8, 1);
-            myBuffer.GetData(dataHeight.ToArray()) ;
+            floatBuffer.GetData(dataHeight);
+            floatBuffer.GetData(dataHeight);
             myBuffer.Release();
+            floatBuffer.Release();
 
+            Debug.Log(dataHeight[0] + " OUI C4EST CA");
+            Debug.Log(dataVector[0] + " OUI papa");
 
 
             return dataHeight[0];
             //return Mathf.PerlinNoise(xCord, yCord);
+
 
         }
 
