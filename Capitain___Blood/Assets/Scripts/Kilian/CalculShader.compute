@@ -69,7 +69,7 @@ RWStructuredBuffer<float> dataHeight;
 RWStructuredBuffer<float2> dataVector;
 
 
-[numthreads(8,8,1)]
+[numthreads(1024,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
 	//dataHeight[id.x] = Fbm(dataVector[id.x]);

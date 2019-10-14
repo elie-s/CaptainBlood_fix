@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BoidTexScript: MonoBehaviour {
+public class BoidMeshScript: MonoBehaviour {
 
     public ComputeShader shader;
+    public Material mat;
+
     public int TexResolution = 256;
 
     public int NumBoids = 100;
@@ -20,8 +22,6 @@ public class BoidTexScript: MonoBehaviour {
     public float CohesionDist = 1.0f;
     public float MaxForce = 1.0f;
     
-    Renderer rend;
-    RenderTexture myRt;
     bool bDoUpdate = false;
 
     struct BoidData
@@ -32,20 +32,20 @@ public class BoidTexScript: MonoBehaviour {
     }
 
     ComputeBuffer boidBuffer;
+    ComputeBuffer boidAltBuffer;
     uint[] ConsumeIds;
+    bool isAltFrame;
+
+    BoxCollider boxCollider;
 
     // Use this for initialization
     void Start () {
-        myRt = new RenderTexture(TexResolution, TexResolution, 24);
-        myRt.enableRandomWrite = true;
-        myRt.Create();
-
-        rend = GetComponent<Renderer>();
-        rend.enabled = true;
+        boxCollider = GetComponent<BoxCollider>();
 
         NumBoids = (NumBoids / 10) * 10;
 
         boidBuffer = new ComputeBuffer(NumBoids, sizeof(float)*8, ComputeBufferType.Append);
+        boidAltBuffer = new ComputeBuffer(NumBoids, sizeof(float) * 8, ComputeBufferType.Append);
 
         BoidData zeroBoid;
         zeroBoid.position = Vector2.zero;
@@ -63,7 +63,7 @@ public class BoidTexScript: MonoBehaviour {
     void OnDestroy()
     {
         boidBuffer.Release();
-        myRt.Release();
+        boidAltBuffer.Release();
     }
 
 
@@ -83,29 +83,17 @@ public class BoidTexScript: MonoBehaviour {
         for(int i=0; i < NumBoids; ++i)
         {
             tempArray[i].position = new Vector2(Random.value * TexResolution, Random.value * TexResolution);
-            tempArray[i].direction = Random.insideUnitCircle;
+            tempArray[i].direction = Random.insideUnitCircle * MaxSpeed;
             tempArray[i].color = new Vector4(Random.value, Random.value, Random.value, 1.0f);
         }
 
         boidBuffer.SetData(tempArray);
         boidBuffer.SetCounterValue((uint)NumBoids);
+        isAltFrame = false;
 
-
-        /* RENDER */
-        int kernelHandle;
-        SetShaderValues();
-
-        kernelHandle = shader.FindKernel("CSRenderWipe");
-        shader.SetTexture(kernelHandle, "Result", myRt);
-        shader.Dispatch(kernelHandle, TexResolution / 8, TexResolution / 8, 1);
-
-        // Render Boids
-        kernelHandle = shader.FindKernel("CSRenderMain");
-        shader.SetBuffer(kernelHandle, "BoidBuffer", boidBuffer);
-        shader.SetTexture(kernelHandle, "Result", myRt);
-        shader.Dispatch(kernelHandle, NumBoids / 8, 1, 1);
-
-        rend.material.SetTexture("_MainTex", myRt);
+        bDoUpdate = true;
+        ComputeStepFrame();
+        bDoUpdate = false;
     }
 
 
@@ -119,37 +107,52 @@ public class BoidTexScript: MonoBehaviour {
         {
 
             ComputeBuffer inBuf = new ComputeBuffer(NumBoids, sizeof(uint), ComputeBufferType.Append);
-            ComputeBuffer outBuf = new ComputeBuffer(NumBoids, sizeof(float) * 8, ComputeBufferType.Append);
+
             inBuf.SetData(ConsumeIds);
             inBuf.SetCounterValue((uint)NumBoids);
-            outBuf.SetCounterValue(0);
 
-            // Do Boid Pass
             kernelHandle = shader.FindKernel("CSBoidMain");
-            shader.SetBuffer(kernelHandle, "BoidBuffer", boidBuffer);
-            shader.SetBuffer(kernelHandle, "InBoidBuffer", inBuf);
-            shader.SetBuffer(kernelHandle, "OutBoidBuffer", outBuf);
+
+            // Do Boid Pass            
+            if (isAltFrame)
+            {
+                boidBuffer.SetCounterValue(0);
+                shader.SetBuffer(kernelHandle, "BoidBuffer", boidAltBuffer);
+                shader.SetBuffer(kernelHandle, "OutBoidBuffer", boidBuffer);
+            } else
+            {
+                boidAltBuffer.SetCounterValue(0);
+                shader.SetBuffer(kernelHandle, "BoidBuffer", boidBuffer);
+                shader.SetBuffer(kernelHandle, "OutBoidBuffer", boidAltBuffer);
+            }
+
+            shader.SetBuffer(kernelHandle, "InBoidBuffer", inBuf);            
             shader.Dispatch(kernelHandle, NumBoids / 10, 1, 1);
 
-            boidBuffer.Dispose();
-            boidBuffer = outBuf;
             inBuf.Dispose();
+
+            isAltFrame = !isAltFrame;
         }
+    }
 
-        // Clear Texture
-        kernelHandle = shader.FindKernel("CSRenderWipe");
-        shader.SetTexture(kernelHandle, "Result", myRt);
-        shader.Dispatch(kernelHandle, TexResolution / 8, TexResolution / 8, 1);
+    void OnRenderObject()
+    {
+        mat.SetPass(0);
+        mat.SetMatrix("My_Object2World", transform.localToWorldMatrix);
 
-        // Render Boids
-        kernelHandle = shader.FindKernel("CSRenderMain");
-        shader.SetBuffer(kernelHandle, "BoidBuffer", boidBuffer);
-        shader.SetTexture(kernelHandle, "Result", myRt);
-        shader.Dispatch(kernelHandle, NumBoids / 8, 1, 1);
+        if (isAltFrame)
+            mat.SetBuffer("BoidBuffer", boidBuffer);
+        else
+            mat.SetBuffer("BoidBuffer", boidAltBuffer);
 
-        // Set Material
-        rend.material.SetTexture("_MainTex", myRt);
+        mat.SetVector("Bounds", new Vector4(boxCollider.size.x, boxCollider.size.y, boxCollider.size.z, 0));
+        mat.SetVector("InvBounds", new Vector4(
+            boxCollider.size.x / TexResolution,
+            boxCollider.size.y / TexResolution,
+            boxCollider.size.z / TexResolution,
+            1.0f));
 
+        Graphics.DrawProcedural(MeshTopology.Triangles, 4 * 3, NumBoids);
     }
 
 
@@ -162,14 +165,14 @@ public class BoidTexScript: MonoBehaviour {
             // AtrractPoint = hit.textureCoord * TexResolution;
         }
 
-        if (Input.GetKeyUp(KeyCode.Alpha2))
+        if (Input.GetKeyUp(KeyCode.Alpha3))
         {
             bDoUpdate = !bDoUpdate;
         }
 
         ComputeStepFrame();
 
-        if (Input.GetKeyUp(KeyCode.W))
+        if (Input.GetKeyUp(KeyCode.E))
             ResetComputeSim();
     }
     

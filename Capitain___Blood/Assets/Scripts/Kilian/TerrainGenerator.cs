@@ -99,6 +99,10 @@ namespace RetroJam.CaptainBlood
                 for (int y = 0; y < height; y++)
                 {
                     heights[x, y] = CalculateHeight(x, y);      //generate some perlin noise value
+                    myBuffer.Release();
+                    floatBuffer.Release();
+                    myBuffer = new ComputeBuffer(1, 16);
+                    floatBuffer = new ComputeBuffer(1, 8);
                 }
             }
 
@@ -115,18 +119,18 @@ namespace RetroJam.CaptainBlood
 
 
             dataVector[0] = new Vector2(xCord, yCord);
+            Debug.Log(dataVector[0] + " OUI C4EST CA");
+            Debug.Log(dataVector + " ---CA");
             myBuffer.SetData(dataVector);
             floatBuffer.SetData(dataHeight);
             CalculShader.SetBuffer(indexOfKernel, "dataHeight", floatBuffer);
             CalculShader.SetBuffer(indexOfKernel, "dataVector", myBuffer);
-            CalculShader.Dispatch(indexOfKernel, 8, 8, 1);
+            CalculShader.Dispatch(indexOfKernel, 1024, 1, 1);
             floatBuffer.GetData(dataHeight);
             floatBuffer.GetData(dataHeight);
-            myBuffer.Release();
-            floatBuffer.Release();
 
-            Debug.Log(dataHeight[0] + " OUI C4EST CA");
-            Debug.Log(dataVector[0] + " OUI papa");
+            //Debug.Log(dataHeight[0] + " OUI C4EST CA");
+            //Debug.Log(dataVector[0] + " OUI papa");
 
 
             return dataHeight[0];
