@@ -65,9 +65,36 @@ namespace RetroJam.CaptainBlood.Upcom
 
             List<SentenceElement> elements = new List<SentenceElement>();
 
-
-            for (int i = 0; i < nouns.Length; i++)
+            for (int i = 0; i < copyWords.Length; i++)
             {
+                elements.Add(new SentenceElement(copyWords[i]));
+            }
+
+            for (int i = 0; i < adjectives.Length; i++)
+            {
+                int adjectiveIndex = adjectives[i];
+
+                for (int k = 0; k < nouns.Length; k++)
+                {
+                    int nounIndex = nouns[k];
+
+                    if (adjectiveIndex < nounIndex)
+                    {
+                        elements[nounIndex].AddElement(elements[adjectiveIndex]);
+                        break;
+                    }
+                }
+            }
+
+            for (int i = nouns.Length-1; i > 0; i--)
+            {
+                int nounIndex = nouns[i];
+
+                if (nounIndex > mainVerbIndex) continue;
+                else
+                {
+
+                }
 
             }
         }
@@ -160,10 +187,9 @@ namespace RetroJam.CaptainBlood.Upcom
         public int hierarchy;
         public SentenceElement[] elements;
 
-        public SentenceElement(Word _word, WordFunction _function)
+        public SentenceElement(Word _word)
         {
             word = _word;
-            function = _function;
             elements = new SentenceElement[0];
             index = -1;
             hierarchy = -1;
@@ -176,6 +202,20 @@ namespace RetroJam.CaptainBlood.Upcom
             elements = new SentenceElement[0];
             index = _index;
             hierarchy = _hierarchy;
+        }
+
+        public void AddElement(SentenceElement _element)
+        {
+            SentenceElement[] result = new SentenceElement[elements.Length + 1];
+
+            for (int i = 0; i < elements.Length; i++)
+            {
+                result[i] = elements[i];
+            }
+
+            result[result.Length - 1] = _element;
+
+            elements = result;
         }
     }
 }
