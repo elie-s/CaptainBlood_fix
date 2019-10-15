@@ -43,11 +43,14 @@ namespace RetroJam.CaptainBlood
         //Compute Shader stuff
         float[,] heights;
         [SerializeField] ComputeShader CalculShader;
-        public ComputeBuffer myBuffer;
+        public ComputeBuffer myBufferX;
+        public ComputeBuffer myBufferY;
         public ComputeBuffer floatBuffer;
         int indexOfKernel;
+        bool doneOnce = false;
 
-        Vector2[] dataVector = new Vector2[2];
+        float[] dataVectorX = new float[2];
+        float[] dataVectorY = new float[2];
         float[] dataHeight = new float[2];
 
         public void Awake()
@@ -55,7 +58,8 @@ namespace RetroJam.CaptainBlood
             terrain_man = GetComponentInParent<Terrain_manager>();
 
             indexOfKernel = CalculShader.FindKernel("CSMain");
-            myBuffer = new ComputeBuffer(1, 16);
+            myBufferX = new ComputeBuffer(1, 8);
+            myBufferY = new ComputeBuffer(1, 8);
             floatBuffer = new ComputeBuffer(1, 8);
 
         }
@@ -99,10 +103,7 @@ namespace RetroJam.CaptainBlood
                 for (int y = 0; y < height; y++)
                 {
                     heights[x, y] = CalculateHeight(x, y);      //generate some perlin noise value
-                    myBuffer.Release();
-                    floatBuffer.Release();
-                    myBuffer = new ComputeBuffer(1, 16);
-                    floatBuffer = new ComputeBuffer(1, 8);
+
                 }
             }
 
@@ -118,16 +119,36 @@ namespace RetroJam.CaptainBlood
             yCord = (float)y / height * Scale*multiplicator + offsetY;
 
 
-            dataVector[0] = new Vector2(xCord, yCord);
-            Debug.Log(dataVector[0] + " OUI C4EST CA");
-            Debug.Log(dataVector + " ---CA");
-            myBuffer.SetData(dataVector);
-            floatBuffer.SetData(dataHeight);
-            CalculShader.SetBuffer(indexOfKernel, "dataHeight", floatBuffer);
-            CalculShader.SetBuffer(indexOfKernel, "dataVector", myBuffer);
-            CalculShader.Dispatch(indexOfKernel, 1024, 1, 1);
-            floatBuffer.GetData(dataHeight);
-            floatBuffer.GetData(dataHeight);
+            dataVectorX[0] = xCord;
+            dataVectorY[0] = yCord;
+            //Debug.Log(dataVector[0] + " OUI C4EST CA");
+            //Debug.Log(dataVector + " ---CA");
+
+            if (doneOnce == false)
+            {
+                myBufferX.SetData(dataVectorX);
+                myBufferY.SetData(dataVectorY);
+                floatBuffer.SetData(dataHeight);
+
+                CalculShader.SetBuffer(indexOfKernel, "dataHeight", floatBuffer);
+                CalculShader.SetBuffer(indexOfKernel, "dataVectorX", myBufferX);
+                CalculShader.SetBuffer(indexOfKernel, "dataVectorY", myBufferY);
+
+                CalculShader.Dispatch(indexOfKernel, 1024, 1, 1);
+
+                floatBuffer.GetData(dataHeight);
+                myBufferX.GetData(dataVectorX);
+                myBufferY.GetData(dataVectorY);
+
+                myBufferY.Release();
+                myBufferX.Release();
+                floatBuffer.Release();
+
+                Debug.Log(dataHeight[0] + " dataHeight");
+                Debug.Log(dataVectorX[0] + " dataVectorX");
+                Debug.Log(dataVectorY[0] + " dataVectorY");
+                doneOnce = true;
+            }
 
             //Debug.Log(dataHeight[0] + " OUI C4EST CA");
             //Debug.Log(dataVector[0] + " OUI papa");

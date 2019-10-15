@@ -51,14 +51,15 @@ float Noise(int x, int y)// Dans Fbm, il va falloir "floor(coord.x), floor(coord
 		Lerp(u, Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1)));
 }
 
-float Fbm(float2 coord)
+float Fbm(float coordx, float coordy)
 {
 	float f = 0.0f;
 	float w = 0.5f;
 	for (float i = 0; i < 4; i++) // Choose Octave (origin = 4)
 	{
-		f += w * Noise(floor(coord.x), floor(coord.y)); // Changed
-		coord *= 2.0f;
+		f += w * Noise(floor(coordx), floor(coordy)); // Changed
+		coordx *= 2.0f;
+		coordy *= 2.0f;
 		w *= 0.5f;
 	}
 	return f;
@@ -66,14 +67,12 @@ float Fbm(float2 coord)
 
 
 RWStructuredBuffer<float> dataHeight;
-RWStructuredBuffer<float2> dataVector;
+RWStructuredBuffer<float> dataVectorX;
+RWStructuredBuffer<float> dataVectorY;
 
 
 [numthreads(1024,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-	//dataHeight[id.x] = Fbm(dataVector[id.x]);
-	dataHeight[id.x] = 7.0;
-	dataVector[id.x] = 1.1;
-	dataVector[id.y] = 1.3;
+	dataHeight[id.x] = Fbm(dataVectorX[id.x], dataVectorY[id.x]);
 }
