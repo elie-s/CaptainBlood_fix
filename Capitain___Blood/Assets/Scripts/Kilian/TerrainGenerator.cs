@@ -134,7 +134,7 @@ namespace RetroJam.CaptainBlood
                 CalculShader.SetBuffer(indexOfKernel, "dataVectorX", myBufferX);
                 CalculShader.SetBuffer(indexOfKernel, "dataVectorY", myBufferY);
 
-                CalculShader.Dispatch(indexOfKernel, 1024, 1, 1);
+                CalculShader.Dispatch(indexOfKernel, 1, 1, 1);
 
                 floatBuffer.GetData(dataHeight);
                 myBufferX.GetData(dataVectorX);

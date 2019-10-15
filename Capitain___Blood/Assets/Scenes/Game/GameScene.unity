@@ -4720,8 +4720,8 @@ MonoBehaviour:
   offsetX: 0
   offsetY: 0
   startOffset: 3.31
-  xCord: 4.965
-  yCord: 0
+  xCord: 9.995698
+  yCord: 5.030698
   terrain1: 0
   terrain2: 1
   terrain3: 0
@@ -7732,8 +7732,8 @@ MonoBehaviour:
   offsetX: 0
   offsetY: 0
   startOffset: 0
-  xCord: 0
-  yCord: 0
+  xCord: 5.030698
+  yCord: 5.030698
   terrain1: 1
   terrain2: 0
   terrain3: 0

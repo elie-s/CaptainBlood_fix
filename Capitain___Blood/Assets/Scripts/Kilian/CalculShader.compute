@@ -36,17 +36,17 @@ float Grad(int hash, float x, float y)
 	return ((hash & 1) == 0 ? x : -x) + ((hash & 2) == 0 ? y : -y);
 }
 
-
-float Noise(int x, int y)// Dans Fbm, il va falloir "floor(coord.x), floor(coord.y)"
+//LE PROBLEME EST LA PUTAIN DE MAAAAAARDE
+float Noise(float x, float y)// Dans Fbm, il va falloir "floor(coord.x), floor(coord.y)"
 {
-	int X = x & 0xff;
-	int Y = y & 0xff;
+	int X = floor(x);
+	int Y = floor(y);
 	x -= floor(x);
 	y -= floor(y);
 	float u = Fade(x);
 	float v = Fade(y);
-	int A = (perm[X] + Y) & 0xff;
-	int B = (perm[X + 1] + Y) & 0xff;
+	float A = (perm[X] + Y);
+	float B = (perm[X + 1] + Y);
 	return Lerp(v, Lerp(u, Grad(perm[A], x, y), Grad(perm[B], x - 1, y)),
 		Lerp(u, Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1)));
 }
@@ -71,8 +71,12 @@ RWStructuredBuffer<float> dataVectorX;
 RWStructuredBuffer<float> dataVectorY;
 
 
-[numthreads(1024,1,1)]
+[numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
+	float x = 12.5;
 	dataHeight[id.x] = Fbm(dataVectorX[id.x], dataVectorY[id.x]);
+	//dataHeight[id.x] = floor(x);
+	dataVectorX[id.x] = 2.0;
+	dataVectorY[id.x] = 3.0;
 }
