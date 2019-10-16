@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RetroJam.CaptainBlood
 {
-    [ExecuteInEditMode]
+    //[ExecuteInEditMode]
 
     public class TerrainGenerator : MonoBehaviour
     {
@@ -121,8 +121,20 @@ namespace RetroJam.CaptainBlood
 
             dataVectorX[0] = xCord;
             dataVectorY[0] = yCord;
-            //Debug.Log(dataVector[0] + " OUI C4EST CA");
-            //Debug.Log(dataVector + " ---CA");
+            
+
+            if(myBufferX == null)
+            {
+                myBufferX = new ComputeBuffer(1, 8);
+            }
+            if (myBufferY == null)
+            {
+                myBufferY = new ComputeBuffer(1, 8);
+            }
+            if (floatBuffer == null)
+            {
+                floatBuffer = new ComputeBuffer(1, 8);
+            }
 
             //if (doneOnce == false)
             //{
@@ -144,14 +156,11 @@ namespace RetroJam.CaptainBlood
                 myBufferX.Release();
                 floatBuffer.Release();
 
-                Debug.Log(dataHeight[0] + " dataHeight");
-                Debug.Log(dataVectorX[0] + " dataVectorX");
-                Debug.Log(dataVectorY[0] + " dataVectorY");
+                //Debug.Log(dataHeight[0] + " dataHeight");
+                //Debug.Log(dataVectorX[0] + " dataVectorX");
+                //Debug.Log(dataVectorY[0] + " dataVectorY");
                 doneOnce = true;
             //}
-
-            //Debug.Log(dataHeight[0] + " OUI C4EST CA");
-            //Debug.Log(dataVector[0] + " OUI papa");
 
 
             return dataHeight[0];
