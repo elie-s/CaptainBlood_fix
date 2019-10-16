@@ -45,8 +45,8 @@ float Noise(float x, float y)// Dans Fbm, il va falloir "floor(coord.x), floor(c
 	y -= floor(y);
 	float u = Fade(x);
 	float v = Fade(y);
-	float A = (perm[X] + Y);
-	float B = (perm[X + 1] + Y);
+	int A = (perm[X] + Y) & 0xff;
+	int B = (perm[X + 1] + Y) & 0xff;
 	return Lerp(v, Lerp(u, Grad(perm[A], x, y), Grad(perm[B], x - 1, y)),
 		Lerp(u, Grad(perm[A + 1], x, y - 1), Grad(perm[B + 1], x - 1, y - 1)));
 }
