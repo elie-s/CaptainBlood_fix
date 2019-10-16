@@ -71,10 +71,6 @@ namespace RetroJam.CaptainBlood
         void Update()
         {
 
-            myBufferX.SetData(dataVectorX);
-            myBufferY.SetData(dataVectorY);
-            floatBuffer.SetData(dataHeight);
-
             Debug.Log(myBufferX.count + " myBufferX");
             Debug.Log(myBufferY.count + " myBufferY");
             Debug.Log(floatBuffer.count + " floatBuffer");
