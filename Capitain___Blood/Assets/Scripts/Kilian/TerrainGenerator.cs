@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+#region TerrainGene
 namespace RetroJam.CaptainBlood
 {
     //[ExecuteInEditMode]
@@ -43,9 +44,6 @@ namespace RetroJam.CaptainBlood
         //Compute Shader stuff
         float[,] heights;
         [SerializeField] ComputeShader CalculShader;
-        ComputeBuffer myBufferXBase;
-        ComputeBuffer myBufferYBase;
-        ComputeBuffer floatBufferBase;
         ComputeBuffer myBufferX;
         ComputeBuffer myBufferY;
         ComputeBuffer floatBuffer;
@@ -61,32 +59,15 @@ namespace RetroJam.CaptainBlood
             terrain_man = GetComponentInParent<Terrain_manager>();
 
             indexOfKernel = CalculShader.FindKernel("CSMain");
-            myBufferXBase = new ComputeBuffer(1, 8);
-            myBufferYBase = new ComputeBuffer(1, 8);
-            floatBufferBase = new ComputeBuffer(1, 8);
+            //myBufferX = new ComputeBuffer(1, 8);
+            //myBufferY = new ComputeBuffer(1, 8);
+            //floatBuffer = new ComputeBuffer(1, 8);
 
         }
 
 
         void Update()
         {
-
-            Debug.Log(myBufferX.count + " myBufferX");
-            Debug.Log(myBufferY.count + " myBufferY");
-            Debug.Log(floatBuffer.count + " floatBuffer");
-
-            if (myBufferX == null)
-            {
-                //myBufferX = new ComputeBuffer(1, 8);
-            }
-            if (myBufferY == null)
-            {
-                //myBufferY = new ComputeBuffer(1, 8);
-            }
-            if (floatBuffer == null)
-            {
-                //floatBuffer = new ComputeBuffer(1, 8);
-            }
 
 
             Terrain terrain = GetComponent<Terrain>();      //for Terrain Data
@@ -144,12 +125,17 @@ namespace RetroJam.CaptainBlood
             dataVectorX[0] = xCord;
             dataVectorY[0] = yCord;
 
-            myBufferX = myBufferXBase;
-            myBufferY = myBufferYBase;
-            floatBuffer = floatBufferBase;
+            //myBufferX = null;
+            //myBufferY = null;
+            //floatBuffer = null;
+
+            myBufferX = new ComputeBuffer(1, 8);
+            myBufferY = new ComputeBuffer(1, 8);
+            floatBuffer = new ComputeBuffer(1, 8);
 
             //if (doneOnce == false)
             //{
+
             myBufferX.SetData(dataVectorX);
                 myBufferY.SetData(dataVectorY);
                 floatBuffer.SetData(dataHeight);
@@ -169,10 +155,10 @@ namespace RetroJam.CaptainBlood
                 floatBuffer.Release();
 
 
-                //Debug.Log(dataHeight[0] + " dataHeight");
-                //Debug.Log(dataVectorX[0] + " dataVectorX");
-                //Debug.Log(dataVectorY[0] + " dataVectorY");
-                doneOnce = true;
+            //Debug.Log(dataHeight[0] + " dataHeight");
+            //Debug.Log(dataVectorX[0] + " dataVectorX");
+            //Debug.Log(dataVectorY[0] + " dataVectorY");
+            doneOnce = true;
             //}
 
 
@@ -185,3 +171,4 @@ namespace RetroJam.CaptainBlood
 
     }
 }
+#endregion 
