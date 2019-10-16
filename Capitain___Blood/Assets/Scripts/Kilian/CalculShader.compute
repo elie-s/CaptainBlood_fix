@@ -57,7 +57,7 @@ float Fbm(float coordx, float coordy)
 	float w = 0.5f;
 	for (float i = 0; i < 4; i++) // Choose Octave (origin = 4)
 	{
-		f += w * Noise(floor(coordx), floor(coordy)); // Changed
+		f += w * Noise(coordx, coordy); // Changed
 		coordx *= 2.0f;
 		coordy *= 2.0f;
 		w *= 0.5f;
@@ -74,9 +74,5 @@ RWStructuredBuffer<float> dataVectorY;
 [numthreads(1,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-	float x = 12.5;
 	dataHeight[id.x] = Fbm(dataVectorX[id.x], dataVectorY[id.x]);
-	//dataHeight[id.x] = floor(x);
-	dataVectorX[id.x] = 2.0;
-	dataVectorY[id.x] = 3.0;
 }

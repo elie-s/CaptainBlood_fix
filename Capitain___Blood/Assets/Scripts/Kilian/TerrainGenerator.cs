@@ -124,8 +124,8 @@ namespace RetroJam.CaptainBlood
             //Debug.Log(dataVector[0] + " OUI C4EST CA");
             //Debug.Log(dataVector + " ---CA");
 
-            if (doneOnce == false)
-            {
+            //if (doneOnce == false)
+            //{
                 myBufferX.SetData(dataVectorX);
                 myBufferY.SetData(dataVectorY);
                 floatBuffer.SetData(dataHeight);
@@ -148,7 +148,7 @@ namespace RetroJam.CaptainBlood
                 Debug.Log(dataVectorX[0] + " dataVectorX");
                 Debug.Log(dataVectorY[0] + " dataVectorY");
                 doneOnce = true;
-            }
+            //}
 
             //Debug.Log(dataHeight[0] + " OUI C4EST CA");
             //Debug.Log(dataVector[0] + " OUI papa");
