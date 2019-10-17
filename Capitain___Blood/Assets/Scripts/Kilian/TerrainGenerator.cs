@@ -50,18 +50,18 @@ namespace RetroJam.CaptainBlood
         int indexOfKernel;
         int doneOnce = 0;
 
-        float[] dataVectorX = new float[2];
-        float[] dataVectorY = new float[2];
-        float[] dataHeight = new float[2];
+        float[] dataVectorX = new float[1];
+        float[] dataVectorY = new float[1];
+        float[] dataHeight = new float[1];
 
         public void Awake()
         {
             terrain_man = GetComponentInParent<Terrain_manager>();
 
             indexOfKernel = CalculShader.FindKernel("CSMain");
-            myBufferX = new ComputeBuffer(1, 8);
-            myBufferY = new ComputeBuffer(1, 8);
-            floatBuffer = new ComputeBuffer(1, 8);
+            myBufferX = new ComputeBuffer(1, 4, ComputeBufferType.Raw);
+            myBufferY = new ComputeBuffer(1, 4, ComputeBufferType.Raw);
+            floatBuffer = new ComputeBuffer(1, 4, ComputeBufferType.Raw);
 
         }
 
@@ -72,7 +72,11 @@ namespace RetroJam.CaptainBlood
 
             Terrain terrain = GetComponent<Terrain>();      //for Terrain Data
             terrain.terrainData = GenerateTerrain(terrain.terrainData);
-   
+
+            Debug.Log(dataHeight[0] + " dataHeight");
+            Debug.Log(dataVectorX[0] + " dataVectorX");
+            Debug.Log(dataVectorY[0] + " dataVectorY");
+
 
             ValueUpdate();
         }
@@ -129,10 +133,8 @@ namespace RetroJam.CaptainBlood
             //myBufferY = null;
             //floatBuffer = null;
 
-
-            if (doneOnce < 1)
+            if (doneOnce < 10000)
             {
-
                 myBufferX.SetData(dataVectorX);
                 myBufferY.SetData(dataVectorY);
                 floatBuffer.SetData(dataHeight);
@@ -151,12 +153,9 @@ namespace RetroJam.CaptainBlood
                 myBufferX.Release();
                 floatBuffer.Release();
 
-
-            Debug.Log(dataHeight[0] + " dataHeight");
-            Debug.Log(dataVectorX[0] + " dataVectorX");
-            Debug.Log(dataVectorY[0] + " dataVectorY");
-            doneOnce++;
+                doneOnce++;
             }
+
 
 
             return dataHeight[0];
@@ -164,8 +163,6 @@ namespace RetroJam.CaptainBlood
 
 
         }
-
-
 
 
     }
