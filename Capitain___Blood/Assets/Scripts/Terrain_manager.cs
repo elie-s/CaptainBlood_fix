@@ -16,7 +16,7 @@ namespace RetroJam.CaptainBlood
 
         public float offsetX;
 
-        [Range(0.0f,3.0f)]public float multiplicateur = 1;
+        [Range(0.0f,3.0f)]public float multiplicateur;
 
         #endregion
 

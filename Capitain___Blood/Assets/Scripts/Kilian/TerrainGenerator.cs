@@ -114,7 +114,7 @@ namespace RetroJam.CaptainBlood
                 }
             }
 
-			if (doneOnce < 10000)
+			if (doneOnce < 1)
             {
                 myBufferX.SetData(dataVectorX);
                 myBufferY.SetData(dataVectorY);
@@ -136,11 +136,12 @@ namespace RetroJam.CaptainBlood
 
                 doneOnce++;
             }
+            Debug.Log(heights);
 
             return heights;
         }
 
-        float[,] CalculateHeight(int x, int y)
+        float CalculateHeight(int x, int y)
         {
 
             if(terrain2 || terrain3) factor = multiplicator;
@@ -148,9 +149,9 @@ namespace RetroJam.CaptainBlood
             xCord = (float)x / width * Scale*multiplicator + offsetX + startOffset*factor ;
             yCord = (float)y / height * Scale*multiplicator + offsetY;
 
-            return dataHeight[0];
+            //return dataHeight[0];
             //return Mathf.PerlinNoise(xCord, yCord);
-
+            return Perlin.Fbm(xCord, yCord, 4);
 
         }
 

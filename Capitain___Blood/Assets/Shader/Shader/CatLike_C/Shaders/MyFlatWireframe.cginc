@@ -24,8 +24,8 @@ float3 GetAlbedoWithWireframe (Interpolators i) {
 	float3 thickness = deltas * _WireframeThickness;
 	barys = smoothstep(thickness, thickness + smoothing, barys);
 	float minBary = min(barys.x, min(barys.y, barys.z));
-	_WireframeColor.b = i.worldPos.y * 0.6 ; //////////// Wireframe_Color
-	_WireframeColor.r = i.worldPos.z * 0.015 - 1.5;
+	_WireframeColor.b = i.worldPos.y * 0.7 ; //////////// Wireframe_Color
+	_WireframeColor.r = -i.worldPos.z*0.015 +10.5;
 
 	/*if (i.worldPos.y <= 0)
 	{

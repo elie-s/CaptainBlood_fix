@@ -1,7 +1,6 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-
 static int perm[255] =
 {
 	151,160,137,91,90,15,
